@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% block title %} Home{% endblock title %} 
+
+{% block body %}
+
+
+<section class="h-50 gradient-custom-2">
+  <div class="container py-5 h-50">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-lg-9 col-xl-7">
+        <div class="card">
+          <div class="rounded-top text-white d-flex flex-row" style="background-color: rgb(36, 95, 172); height:200px;">
+            <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+              <img src="{{user.profile.image}}" alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2" style="width: 150px; z-index: 1">
+              <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark" style="z-index: 1;">
+                Edit profile
+              </button>
+            </div>
+            <div class="ms-3" style="margin-top: 130px;">
+              <h5>{{user.profile.first_name}}&nbsp;{{user.profile.last_name}}</h5>
+              <p>{{user.profile.phone}}</p>
+            </div>
+          </div>
+          <div class="p-4 text-black" style="background-color: #f8f9fa;">
+            <div class="d-flex justify-content-end text-center py-1">
+ 
+            </div>
+          </div>
+          <div class="card-body p-4 text-black">
+            <div class="mb-5">
+              <p class="lead fw-normal mb-1">About</p>
+              <div class="p-4" style="background-color: #f8f9fa;">
+           
+                <p class="font-italic mb-1">{{user.profile.address}}</p>
+                <p class="font-italic mb-0">{{temp2.doc.Gender}}</p>
+                
+              </div>
+           
+            </div>
+
+          </div>
+        </div>
+        <form action="postText"  method="POST">
+          {% csrf_token %}
+          <div class="mb-3 mt-3">
+            <label for="comment">Enter Your Text:</label>
+            <textarea class="form-control" rows="5" id="text" name="text"></textarea>
+            Privacy:<select name="privacy">
+              <option value="enable">Suggesion Enable</option>
+              <option value="private">Private</option>
+
+              </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Post</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- <p>
+  <input type="button" value="Show DIV" id="bt" onclick="toggle(this)">
+</p> -->
+
+<!--The DIV element to toggle visibility. Its "display" property is set as "none". -->
+<div  style="border:solid 1px #ddd; padding:10px; display:none;" id="cont">
+
+    <div>
+        <p id="message"></p>>
+        </div>
+
+</div>
+<script>
+  function toggle(ele) {
+      var cont = document.getElementById('cont');
+      if (cont.style.display == 'block') {
+          cont.style.display = 'none';
+
+          document.getElementById(ele.id).value = 'Show DIV';
+      }
+      else {
+          cont.style.display = 'block';
+          document.getElementById(ele.id).value = 'Hide DIV';
+      }
+  }
+</script>
+
+<div class="prightcolumn">
+  
+      {% for temp in mydoc %}
+      <div class="container mt-5 mb-5">
+          <div class="row d-flex align-items-center justify-content-center">
+              <div class="col-md-6">
+                  <div class="card">
+                      <div class="d-flex justify-content-between p-2 px-3">
+                          <div class="d-flex flex-row align-items-center"> <img src="https://i.imgur.com/UXdKE3o.jpg" width="60" class="rounded-circle">
+                              <div class="d-flex flex-column ml-2"> <span class="font-weight-bold"><b>{{temp.author}}</b></span> <small class="text-primary">Collegues</small> </div>
+                          </div>
+                          <div class="d-flex flex-row mt-1 ellipsis"> <small class="mr-2"></small> <i class="fa fa-ellipsis-h"></i> </div>
+                      </div> 
+                      <div class="p-2">
+                          <p class="text-justify">{{temp.text}}</p>
+                          <hr>
+                          <div class="d-flex justify-content-between align-items-center">
+                              <div class="d-flex flex-row icons d-flex align-items-center"> <i class="fa fa-heart"></i> <i class="fa fa-smile-o ml-2"></i> </div>
+                              <div class="d-flex flex-row muted-color"> <span>{{temp.c_n}} Comments</span> <span class="ml-2"></span> &nbsp;&nbsp;&nbsp;&nbsp;
+                                  <!-- <form action="releventPost"  method="POST">
+                                      {% csrf_token %}
+      
+                                      <button type="submit" class="btn btn-primary" value="{{temp.id}}" name="key_id">Most Relavent Post</button>
+                                    </form> -->
+                                    
+                                    <a class="btn"  href="#" data-catid="{{ temp.id }}"id="bt" >Relavent Post</a>
+
+
+
+                       
+
+                              </div>
+                              
+                          </div>
+                          <hr>
+                          <div id="div" ></div>
+              
+                          <div id="{{temp.id}}" class="mydiv">
+                            <p id="{{temp.id}}+1" ></p>
+                            
+                          </div>
+                          <a class="close"  href="#" data-catid="{{ temp.id }}"id="close" >Close</a>
+                        </div>
+                          <div class="comments">
+                              {% for t in temp.comment %}
+                              <div class="d-flex flex-row mb-2"> <img src="https://i.imgur.com/9AZ2QX1.jpg" width="60" class="rounded-circle">
+                                  <div class="d-flex flex-column ml-2"> <span class="name">{{t.author}}</span> <small class="comment-text">{{t.text}}</small>
+                                      <div class="d-flex flex-row align-items-center status"> <small>Like</small> <small>Reply</small> <small>Translate</small> <small>18 mins</small> </div>
+                                  </div>
+                              </div>
+                              
+                              {% endfor %}
+
+                              <div class="comment-input"> 
+                                <form action="postComment"  method="POST">
+                                  {% csrf_token %}
+                              <input type="text" class="form-control"name="comment">
+                              Privacy:<select name="privacy">
+                                  <option value="enable">Suggesion Enable</option>
+                                  <option value="private">Private</option>
+              
+                                  </select>
+                              <button type="submit" class="btn btn-primary"name="c_comment"value="{{temp.id}}">Post</button>
+                              </form>  
+                                
+                                <div class="fonts"> <i class="fa fa-camera"></i> </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      {%endfor%}
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script type="text/javascript">
+  var data2;
+  var user={}
+ 
+
+
+  $('.btn').click(function(){
+  var catid;
+  catid = $(this).attr("data-catid");
+ 
+  $.ajax(
+  {
+      type:"GET",
+      url: "/releventPost",
+      data:{
+               post_id: catid
+      },
+      
+      success: function( data ) 
+      {
+
+        var obj = null
+        obj= JSON.parse(data)
+        document.getElementById(catid).style.display = "block"
+        data2=obj;
+        console.log(obj.length)
+        for (var i=0; i< obj.length; i++){
+          console.log(obj[i])
+          var target = document.getElementById(catid);
+          var auther=obj[i]['author']
+          var post=obj[i]['text']
+
+          var newElement = document.createElement("b");
+          var newElement2 = document.createElement("address");
+          
+          try {
+            newElement.innerHTML ="Author: "+auther;
+            if(obj[i]['first_name']==""){
+              newElement2.innerHTML = "Nothing to show";
+            }
+            else{
+              newElement2.innerHTML ="Full Name: "+ obj[i]['first_name']+" "+ obj[i]['last_name']+"<br>Email: "+ obj[i]['email'];
+            }
+            
+}
+catch(err) {
+  colsole.log(err.message);
+}
+          
+
+
+          
+
+          document.getElementById(catid).appendChild(newElement);
+          document.getElementById(catid).appendChild(newElement2);
+          
+          target.innerHTML += "<p>Post: </p>"+post+"<br/>"+"<hr>";
+          
+
+        }
+        data=null
+        
+      }
+   })
+});
+
+</script>
+
+<script>
+  $('.close').click(function(){
+    var catid2 = $(this).attr("data-catid")
+    document.getElementById(catid2).innerHTML= ""
+    document.getElementById(catid2).style.display = "none"
+
+  });
+</script>
+
+{% endblock body %}
